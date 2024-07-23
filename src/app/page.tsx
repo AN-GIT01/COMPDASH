@@ -1,8 +1,8 @@
 import Image from "next/image";
-import {generateData, genDetectedComputer} from "../utils/generateData"
+import {genDetectedComputer} from "../utils/generateData"
 
 export default function Home() {
-  generateData()
+
   genDetectedComputer()
 
   return (

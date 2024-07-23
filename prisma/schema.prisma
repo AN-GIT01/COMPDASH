@@ -19,10 +19,17 @@ model LicensedComputers {
   description String?
 }
 
+model ScanDate {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  detectedComputers DetectedComputers[]
+}
+
 model DetectedComputers {
   id Int @id @default(autoincrement())
   compName String
   swName String
   swVersion String
-  scanDate DateTime
+  scanDateId Int @unique
+  scanDate ScanDate @relation(fields: [scanDateId], references: [id])
 }
