@@ -23,6 +23,7 @@ model ScanDate {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   detectedComputers DetectedComputers[]
+  comment String?
 }
 
 model DetectedComputers {
