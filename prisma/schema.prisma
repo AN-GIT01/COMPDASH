@@ -31,6 +31,6 @@ model DetectedComputers {
   compName String
   swName String
   swVersion String
-  scanDateId Int @unique
+  scanDateId Int
   scanDate ScanDate @relation(fields: [scanDateId], references: [id])
 }

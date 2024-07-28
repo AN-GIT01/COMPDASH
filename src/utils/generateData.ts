@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 // import "lodash";
 
-const compNames = [
+export const compNames = [
   "BSL-COMP01",
   "SAN-COMP01",
   "SAN-COMP03",
@@ -15,11 +15,11 @@ const compNames = [
   "SER-COMP03",
 ];
 
-const progNames = ["Java 8 Update", "Java auto updater"];
-const progVers = ["2.8.411.9", "8.0.1720.11"];
+export const progNames = ["Java 8 Update", "Java auto updater"];
+export const progVers = ["2.8.411.9", "8.0.1720.11"];
 
 // для генерации заданного кол-ва уникальных чисел от 1 до заданного max
-function myRandomInts(quantity: number, max: number) {
+export function myRandomInts(quantity: number, max: number) {
   if (quantity >= max) {
     throw "Bad input values for myRandomInts function";
   }
@@ -35,7 +35,7 @@ function myRandomInts(quantity: number, max: number) {
 }
 
 // генерация заданного кол-ва дат из недавнего прошлого
-function genScanDates(quantity: number) {
+export function genScanDates(quantity: number) {
   const set = new Set<Date>();
   while (set.size < quantity) {
     set.add(faker.date.recent({ days: 10 }));
