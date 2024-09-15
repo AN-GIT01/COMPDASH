@@ -81,13 +81,20 @@ export function genDetectedComputer(count: number) {
 }
 
 // список лицензированных компьютеров один, так что перед генерацией нового списка удаляем старый
+// https://learn.javascript.ru/async-await
 export function genLicensedComputers() {
   let $res = 0
   try {
     const clean = async ()=>{
         await prisma.$queryRaw`TRUNCATE TABLE "public"."LicensedComputers1" RESTART IDENTITY CASCADE;`
     }
-    clean().catch( ()=>{ $res = 5})
+    clean().
+    then( ()=>{
+      $res = 0
+     }).
+    catch( ()=>{
+       $res = 5
+      })
 
     // clean().then(null, ()=>{
     //     console.log('Failed to clean table');
@@ -99,5 +106,22 @@ export function genLicensedComputers() {
     $res = 1;
   }
 
+  return $res;
+}
+
+export function genLicensedComputers2() {
+  let $res = 0;
+  let $er = (async () => {
+    let response =  await prisma.$queryRaw`TRUNCATE TABLE "public"."LicensedComputers" RESTART IDENTITY CASCADE;`
+    console.log("Response")
+    return response
+
+  })().then(()=>{
+    $res = 3})
+    .catch(()=>{
+    $res = 5
+  });
+
+  
   return $res;
 }
