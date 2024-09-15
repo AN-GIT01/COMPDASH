@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
+import prisma from "@/lib/prisma";
 // import "lodash";
 
-export const compNames = [
+const compNames = [
   "BSL-COMP01",
   "SAN-COMP01",
   "SAN-COMP03",
@@ -15,11 +16,11 @@ export const compNames = [
   "SER-COMP03",
 ];
 
-export const progNames = ["Java 8 Update", "Java auto updater"];
-export const progVers = ["2.8.411.9", "8.0.1720.11"];
+const progNames = ["Java 8 Update", "Java auto updater"];
+const progVers = ["2.8.411.9", "8.0.1720.11"];
 
 // для генерации заданного кол-ва уникальных чисел от 1 до заданного max
-export function myRandomInts(quantity: number, max: number) {
+function myRandomInts(quantity: number, max: number) {
   if (quantity >= max) {
     throw "Bad input values for myRandomInts function";
   }
@@ -35,7 +36,7 @@ export function myRandomInts(quantity: number, max: number) {
 }
 
 // генерация заданного кол-ва дат из недавнего прошлого
-export function genScanDates(quantity: number) {
+function genScanDates(quantity: number) {
   const set = new Set<Date>();
   while (set.size < quantity) {
     set.add(faker.date.recent({ days: 10 }));
@@ -49,26 +50,39 @@ export function genScanDates(quantity: number) {
 
 // идея такая: генерируем 3 случайные даты, затем в цикле для каждой даты
 // генерируем несколько компьютеров, которые будут исключены из текущей генерации
-export function genDetectedComputer() {
-  const scanDates = genScanDates(3);
+export function genDetectedComputer(count: number) {
+  const dates = genScanDates(count);
+  dates.forEach(async (d) => {
+    const date = await prisma.scanDate.create({
+      data: {
+        createdAt: d,
+        comment: "",
+      },
+    });
+
+    const exclude = myRandomInts(2, compNames.length);
+    compNames.forEach(async (comp, indx) => {
+        if(!exclude.includes(indx)) {
+
+        progNames.forEach(async (progName, i) => {
+            const ret = await prisma.detectedComputers.create({
+                  data: {
+                      compName: comp,
+                      swName: progName,
+                      swVersion: i? '2.8.411.9' : '8.0.1720.11',
+                      scanDateId:  date.id
+                  }
+                });           
+           })
+           
+        }
+    })
+  });
+
+  return dates;
+}
+
+// список лицензированных компьютеров один, так что перед генерацией нового списка удаляем старый
+export function genLicensedComputers() {
   
-
-  // const comps = [];
-  // const scanDate = faker.date.recent({ days: 10 })
-
-  // console.log(scanDate)
-
-  // console.log(genScanDates(3))
-  // compNames.forEach((compName) => {
-  //   progNames.forEach((progName, i) => {
-  //     comps.push({
-  //       name: compName,
-  //       swName: progName,
-  //       swVersion: i? '2.8.411.9' : '8.0.1720.11',
-  //       scanDate: scanDate,
-  //     });
-  //   });
-  // });
-
-  // console.log(comps);
 }

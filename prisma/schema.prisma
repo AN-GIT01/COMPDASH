@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -14,23 +9,30 @@ datasource db {
 }
 
 model LicensedComputers {
-  id Int @id @default(autoincrement())
-  compName String
+  id          Int     @id @default(autoincrement())
+  compName    String
   description String?
 }
 
 model ScanDate {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now())
+  comment           String?
   detectedComputers DetectedComputers[]
-  comment String?
 }
 
 model DetectedComputers {
-  id Int @id @default(autoincrement())
-  compName String
-  swName String
-  swVersion String
+  id         Int      @id @default(autoincrement())
+  compName   String
+  swName     String
+  swVersion  String
   scanDateId Int
-  scanDate ScanDate @relation(fields: [scanDateId], references: [id])
+  scanDate   ScanDate @relation(fields: [scanDateId], references: [id])
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view maxscandate {
+  id        Int  @unique
+  createdAt DateTime?
+  comment   String?
 }
