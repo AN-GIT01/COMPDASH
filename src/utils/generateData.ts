@@ -62,21 +62,19 @@ export function genDetectedComputer(count: number) {
 
     const exclude = myRandomInts(2, compNames.length);
     compNames.forEach(async (comp, indx) => {
-        if(!exclude.includes(indx)) {
-
+      if (!exclude.includes(indx)) {
         progNames.forEach(async (progName, i) => {
-            const ret = await prisma.detectedComputers.create({
-                  data: {
-                      compName: comp,
-                      swName: progName,
-                      swVersion: i? '2.8.411.9' : '8.0.1720.11',
-                      scanDateId:  date.id
-                  }
-                });           
-           })
-           
-        }
-    })
+          const ret = await prisma.detectedComputers.create({
+            data: {
+              compName: comp,
+              swName: progName,
+              swVersion: i ? "2.8.411.9" : "8.0.1720.11",
+              scanDateId: date.id,
+            },
+          });
+        });
+      }
+    });
   });
 
   return dates;
@@ -84,5 +82,22 @@ export function genDetectedComputer(count: number) {
 
 // список лицензированных компьютеров один, так что перед генерацией нового списка удаляем старый
 export function genLicensedComputers() {
-  
+  let $res = 0
+  try {
+    const clean = async ()=>{
+        await prisma.$queryRaw`TRUNCATE TABLE "public"."LicensedComputers1" RESTART IDENTITY CASCADE;`
+    }
+    clean().catch( ()=>{ $res = 5})
+
+    // clean().then(null, ()=>{
+    //     console.log('Failed to clean table');
+    //     return 3;
+    //   }
+  //  )
+  } catch (err: any) {
+    console.log(err.message);
+    $res = 1;
+  }
+
+  return $res;
 }
